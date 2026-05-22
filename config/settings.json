@@ -1,0 +1,15 @@
+{
+  "cleanupPeriodDays": 30,
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "sonnet",
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/statusline-command.sh\""
+  },
+  "voiceEnabled": false,
+  "defaultView": "chat",
+  "autoMemoryEnabled": true,
+  "showThinkingSummaries": true
+}

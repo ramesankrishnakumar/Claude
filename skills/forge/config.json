@@ -1,0 +1,66 @@
+{
+  "name": "Forge",
+  "version": "2.0",
+  "description": "Lightweight engineering workflow orchestrator (open source)",
+  "modes": [
+    {
+      "id": "init",
+      "name": "Init",
+      "description": "One-time identity / GitHub repo / preferences setup",
+      "phaseDoc": "phases/_init.md",
+      "suggestedNext": null
+    },
+    {
+      "id": "plan",
+      "name": "Plan",
+      "description": "Brainstorm the approach",
+      "phaseDoc": "phases/plan.md",
+      "composesSkills": ["~/.claude/skills/plan-to-html/SKILL.md"],
+      "suggestedNext": "issues"
+    },
+    {
+      "id": "issues",
+      "name": "Issues",
+      "description": "Create or link GitHub issues",
+      "phaseDoc": "phases/issues.md",
+      "composesSkills": ["~/.claude/skills/manage-issues/SKILL.md"],
+      "suggestedNext": "design"
+    },
+    {
+      "id": "design",
+      "name": "Design",
+      "description": "Write a design doc, optionally push to Google Docs",
+      "phaseDoc": "phases/design.md",
+      "composesSkills": [
+        "~/.claude/skills/design-doc/SKILL.md",
+        "~/.claude/skills/google-docs/SKILL.md",
+        "~/.claude/skills/plan-to-html/SKILL.md"
+      ],
+      "suggestedNext": "build"
+    },
+    {
+      "id": "build",
+      "name": "Build",
+      "description": "Implement the code changes per plan.md",
+      "phaseDoc": "phases/build.md",
+      "composesSkills": ["~/.claude/skills/plan-to-html/SKILL.md"],
+      "suggestedNext": "ship"
+    },
+    {
+      "id": "ship",
+      "name": "Ship",
+      "description": "Commit and create a PR",
+      "phaseDoc": "phases/ship.md",
+      "composesSkills": ["~/.claude/skills/commit-and-create-pr/SKILL.md"],
+      "suggestedNext": null
+    }
+  ],
+  "alwaysOn": [
+    "phases/_entry.md",
+    "phases/_shared.md"
+  ],
+  "paths": {
+    "state": ".forge",
+    "config": "~/.claude/forge-config.json"
+  }
+}

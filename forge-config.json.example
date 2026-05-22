@@ -1,0 +1,15 @@
+{
+  "identity": {
+    "github_login": "octocat",
+    "email": "you@example.com"
+  },
+  "issues": {
+    "default_repo": "owner/repo"
+  },
+  "preferences": {
+    "audience": "non-technical",
+    "verification": "strict",
+    "code_review": "advisory",
+    "plan_quality_gate": "warn"
+  }
+}

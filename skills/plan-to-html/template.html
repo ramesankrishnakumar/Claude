@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{title}}</title>
+
+<style>
+  :root {
+    /* palette */
+    --color-page-bg:     #fafaf7;
+    --color-surface:     #ffffff;
+    --color-text:        #1f2024;
+    --color-text-muted:  #5b5d63;
+    --color-text-faint:  #8a8d94;
+    --color-border:      #e8e6df;
+    --color-border-soft: #f0eee8;
+    --color-accent:      #6b8e7f;
+    --color-accent-soft: #eef2f0;
+    --color-code-bg:     #f5f3ec;
+    --color-watch-bg:    #fbf4e8;
+    --color-watch-bd:    #e6d6a8;
+
+    /* type */
+    --font-serif: ui-serif, "Iowan Old Style", "Source Serif Pro", Georgia, serif;
+    --font-sans:  -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+    --font-mono:  ui-monospace, "JetBrains Mono", "SF Mono", "Menlo", monospace;
+
+    --fs-body:   16px;
+    --fs-small:  13.5px;
+    --fs-tiny:   12px;
+    --fs-h1:     30px;
+    --fs-h2:     22px;
+    --fs-h3:     17px;
+    --lh-body:   1.62;
+
+    /* layout */
+    --reading-col:  760px;
+    --wide-col:    1040px;
+    --gutter:      28px;
+
+    /* spacing / shape */
+    --space-1:  4px;
+    --space-2:  8px;
+    --space-3:  12px;
+    --space-4:  18px;
+    --space-5:  28px;
+    --space-6:  44px;
+    --radius-sm:  4px;
+    --radius-md:  8px;
+    --radius-lg:  12px;
+
+    --shadow-card: 0 1px 0 rgba(0,0,0,.03), 0 1px 2px rgba(60,60,40,.04);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--color-page-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* layout shells */
+  .doc { padding: var(--space-6) var(--gutter) var(--space-6); }
+  .col-reading { max-width: var(--reading-col); margin: 0 auto; }
+  .col-wide    { max-width: var(--wide-col);    margin: 0 auto; }
+
+  /* headings */
+  h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 600; color: var(--color-text); letter-spacing: -0.005em; }
+  h1 { font-size: var(--fs-h1); line-height: 1.2; margin: 0 0 var(--space-3); }
+  h2 { font-size: var(--fs-h2); line-height: 1.25; margin: var(--space-6) 0 var(--space-3); }
+  h3 { font-size: var(--fs-h3); line-height: 1.3;  margin: var(--space-5) 0 var(--space-2); }
+  h4 { font-size: 15px; margin: var(--space-4) 0 var(--space-2); }
+
+  p { margin: 0 0 var(--space-3); }
+  a { color: var(--color-accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent); }
+  a:hover { border-bottom-color: var(--color-accent); }
+
+  ul, ol { margin: 0 0 var(--space-3) 0; padding-left: var(--space-5); }
+  li { margin: 0 0 var(--space-1); }
+
+  /* header band */
+  .doc-header {
+    padding: var(--space-6) var(--gutter) var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .doc-header .col-reading { display: block; }
+  .doc-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-faint);
+    margin-bottom: var(--space-2);
+  }
+  .doc-meta {
+    color: var(--color-text-muted);
+    font-size: var(--fs-small);
+    margin-top: var(--space-3);
+  }
+
+  /* hero zone */
+  .hero { padding: var(--space-6) var(--gutter) 0; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+  @media (min-width: 980px) {
+    .hero-grid { grid-template-columns: 1.05fr 1fr; }
+  }
+  .hero-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-card);
+  }
+  .hero-card h2 { margin-top: 0; font-size: 18px; }
+  .hero-card.empty { display: none; }
+
+  /* ID chip + toolbar */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+  .id-chip {
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+    padding: 2px 8px;
+    border-radius: 999px;
+    cursor: pointer;
+    user-select: all;
+  }
+  .id-chip:hover { background: color-mix(in srgb, var(--color-accent) 18%, white); }
+  .id-chip.copied { background: var(--color-accent); color: white; }
+
+  .icon-btn {
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .icon-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .icon-btn.copied { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+
+  /* watch-outs */
+  .watch-list { list-style: none; padding: 0; margin: 0; }
+  .watch-list > li {
+    border-left: 3px solid var(--color-watch-bd);
+    background: var(--color-watch-bg);
+    padding: var(--space-3) var(--space-4);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: var(--space-3);
+  }
+  .watch-list > li:last-child { margin-bottom: 0; }
+  .watch-list .watch-title {
+    font-weight: 600;
+    font-size: var(--fs-small);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: 2px;
+  }
+  .watch-list .id-chip { background: rgba(255,255,255,.6); color: #8a6d2e; border-color: var(--color-watch-bd); }
+  .watch-list .watch-body { font-size: var(--fs-small); color: var(--color-text-muted); margin: 0; }
+
+  /* figure (mermaid) */
+  figure.mermaid-fig {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-4) 0;
+    overflow-x: auto;
+  }
+  figure.mermaid-fig .mermaid { display: flex; justify-content: center; min-height: 40px; }
+  figure.mermaid-fig figcaption {
+    font-size: var(--fs-small);
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+    font-style: italic;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin: var(--space-5) 0;
+  }
+  .toc-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-faint);
+    margin-bottom: var(--space-2);
+  }
+  .toc ul { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: var(--space-5); }
+  .toc li { font-size: var(--fs-small); margin: 2px 0; break-inside: avoid; }
+  .toc a { border-bottom: none; color: var(--color-text); }
+  .toc a:hover { color: var(--color-accent); }
+  .toc li.depth-3 { padding-left: var(--space-3); color: var(--color-text-muted); }
+
+  /* detail body */
+  .detail h2 {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .detail h2 .id-chip,
+  .detail h3 .id-chip {
+    font-family: var(--font-mono);
+    font-size: var(--fs-tiny);
+    font-weight: 400;
+    opacity: 0.7;
+  }
+  .detail h3 { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+
+  /* code blocks */
+  .code-wrap {
+    position: relative;
+    margin: var(--space-4) 0;
+  }
+  pre {
+    background: var(--color-code-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    margin: 0;
+  }
+  pre code { font-family: inherit; }
+  .code-toolbar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    background: rgba(245,243,236,.85);
+    backdrop-filter: blur(2px);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+  }
+  code:not(pre code) {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--color-code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid var(--color-border-soft);
+  }
+
+  /* tables */
+  .table-wrap { overflow-x: auto; margin: var(--space-4) 0; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: var(--fs-small);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  th, td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border-soft);
+    vertical-align: top;
+  }
+  thead th {
+    background: var(--color-accent-soft);
+    color: var(--color-text);
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* checkboxes in lists */
+  li input[type="checkbox"] { margin-right: var(--space-2); }
+
+  /* tldr */
+  ul.tldr { list-style: none; padding: 0; margin: 0; }
+  ul.tldr > li {
+    padding: var(--space-2) 0 var(--space-2) var(--space-4);
+    border-bottom: 1px dashed var(--color-border-soft);
+    position: relative;
+  }
+  ul.tldr > li:last-child { border-bottom: none; }
+  ul.tldr > li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  /* footer */
+  .doc-footer {
+    padding: var(--space-5) var(--gutter);
+    font-size: var(--fs-tiny);
+    color: var(--color-text-faint);
+    text-align: center;
+    border-top: 1px solid var(--color-border-soft);
+    margin-top: var(--space-6);
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="doc-header">
+  <div class="col-reading">
+    <div class="doc-eyebrow">{{eyebrow}}</div>
+    <h1>{{title}}</h1>
+    <p class="doc-meta">{{subtitle}}</p>
+  </div>
+</header>
+
+<!-- ========== HERO ZONE ========== -->
+<section class="hero">
+  <div class="col-wide">
+    <div class="hero-grid">
+
+      <!-- TL;DR + watch-outs (left column) -->
+      <div>
+        <div class="hero-card{{tldr_empty_class}}" id="hero-tldr">
+          <div class="toolbar">
+            <h2>TL;DR</h2>
+            <span class="id-chip" data-copy="hero-tldr">hero-tldr</span>
+          </div>
+          <ul class="tldr">
+{{tldr}}
+          </ul>
+        </div>
+
+        <div class="hero-card{{watch_empty_class}}" id="hero-watch" style="margin-top: var(--space-5);">
+          <div class="toolbar">
+            <h2>Pay attention to</h2>
+            <span class="id-chip" data-copy="hero-watch">hero-watch</span>
+          </div>
+          <ul class="watch-list">
+{{watch_out}}
+          </ul>
+        </div>
+      </div>
+
+      <!-- approach diagram (right column) -->
+      <div>
+        <figure class="mermaid-fig{{approach_empty_class}}" id="fig-approach">
+          <div class="toolbar">
+            <strong style="font-family: var(--font-serif); font-size: 18px;">{{approach_title}}</strong>
+            <span style="display:flex; gap:var(--space-2); align-items:center;">
+              <span class="id-chip" data-copy="fig-approach">fig-approach</span>
+              <button class="icon-btn copy-img" data-fig="fig-approach">copy PNG</button>
+            </span>
+          </div>
+          <div class="mermaid">
+{{approach_diagram}}
+          </div>
+          <figcaption>{{approach_caption}}</figcaption>
+        </figure>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== DETAIL ZONE ========== -->
+<main class="doc">
+  <div class="col-reading detail">
+
+    <!-- TOC -->
+    <nav class="toc" id="section-toc" aria-label="Table of contents">
+      <div class="toolbar">
+        <div class="toc-label">On this page</div>
+        <span class="id-chip" data-copy="section-toc">section-toc</span>
+      </div>
+      <ul>
+{{toc}}
+      </ul>
+    </nav>
+
+{{detail_body}}
+
+  </div>
+</main>
+
+<footer class="doc-footer">
+  Generated by <code>plan-to-html</code> · source: <code>{{source_basename}}</code>
+</footer>
+
+<!-- ========== MERMAID ========== -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      fontFamily: '-apple-system, BlinkMacSystemFont, Inter, "Segoe UI", system-ui, sans-serif',
+      fontSize: '14px',
+      primaryColor:        '#ffffff',
+      primaryTextColor:    '#1f2024',
+      primaryBorderColor:  '#c9c5b8',
+      lineColor:           '#8a8d94',
+      secondaryColor:      '#eef2f0',
+      tertiaryColor:       '#fbf4e8',
+      noteBkgColor:        '#fbf4e8',
+      noteBorderColor:     '#e6d6a8',
+      actorBkg:            '#ffffff',
+      actorBorder:         '#6b8e7f',
+      actorTextColor:      '#1f2024',
+      labelBoxBkgColor:    '#eef2f0',
+      labelBoxBorderColor: '#6b8e7f',
+      signalColor:         '#5b5d63',
+      signalTextColor:     '#1f2024',
+    }
+  });
+</script>
+
+<!-- ========== COPY BUTTONS ========== -->
+<script>
+  // ID chip click-to-copy
+  document.querySelectorAll('.id-chip[data-copy]').forEach(chip => {
+    chip.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(chip.dataset.copy);
+        chip.classList.add('copied');
+        const orig = chip.textContent;
+        chip.textContent = 'copied';
+        setTimeout(() => { chip.classList.remove('copied'); chip.textContent = orig; }, 900);
+      } catch (e) { console.warn('copy failed', e); }
+    });
+  });
+
+  // <pre> copy buttons — plain text
+  document.querySelectorAll('.copy-code').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const pre = btn.closest('.code-wrap').querySelector('pre');
+      if (!pre) return;
+      try {
+        await navigator.clipboard.writeText(pre.innerText);
+        btn.classList.add('copied');
+        const orig = btn.textContent;
+        btn.textContent = 'copied';
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = orig; }, 900);
+      } catch (e) { console.warn('copy failed', e); }
+    });
+  });
+
+  // mermaid diagram copy-as-PNG.
+  // Mermaid renders the SVG with class-based selectors that reference styles
+  // injected into the document head. When we serialize the SVG and try to
+  // rasterize it via <img>, those external styles aren't visible, so the
+  // canvas ends up unstyled (or tainted on file://). We snapshot computed
+  // styles onto inline `style` attributes before serializing.
+  const SVG_STYLE_PROPS = [
+    'fill','fill-opacity','stroke','stroke-width','stroke-dasharray','stroke-opacity',
+    'opacity','font-family','font-size','font-weight','font-style','text-anchor',
+    'dominant-baseline','color','visibility','marker-end','marker-start','marker-mid'
+  ];
+
+  function inlineSvgStyles(srcSvg) {
+    const clone = srcSvg.cloneNode(true);
+    const srcNodes = srcSvg.querySelectorAll('*');
+    const dstNodes = clone.querySelectorAll('*');
+    for (let i = 0; i < srcNodes.length; i++) {
+      const cs = window.getComputedStyle(srcNodes[i]);
+      let inline = '';
+      for (const prop of SVG_STYLE_PROPS) {
+        const v = cs.getPropertyValue(prop);
+        if (v) inline += `${prop}:${v};`;
+      }
+      dstNodes[i].setAttribute('style', inline);
+    }
+    if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    const bbox = srcSvg.getBoundingClientRect();
+    if (!clone.getAttribute('width'))  clone.setAttribute('width',  bbox.width);
+    if (!clone.getAttribute('height')) clone.setAttribute('height', bbox.height);
+    return { clone, width: bbox.width, height: bbox.height };
+  }
+
+  document.querySelectorAll('.copy-img').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const figId = btn.dataset.fig;
+      const fig = document.getElementById(figId);
+      if (!fig) return;
+      const svg = fig.querySelector('svg');
+      if (!svg) return;
+
+      const setCopied = () => {
+        btn.classList.add('copied');
+        const orig = btn.textContent;
+        btn.textContent = 'copied';
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = orig; }, 900);
+      };
+
+      const { clone, width, height } = inlineSvgStyles(svg);
+      const xml = new XMLSerializer().serializeToString(clone);
+      const svgB64 = btoa(unescape(encodeURIComponent(xml)));
+      const dataUrl = 'data:image/svg+xml;base64,' + svgB64;
+
+      try {
+        if (typeof ClipboardItem === 'undefined') throw new Error('ClipboardItem unsupported');
+        const img = new Image();
+        await new Promise((res, rej) => {
+          img.onload = res;
+          img.onerror = () => rej(new Error('svg image load failed'));
+          img.src = dataUrl;
+        });
+        const scale = 2;
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.max(1, Math.round(width  * scale));
+        canvas.height = Math.max(1, Math.round(height * scale));
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const pngBlob = await new Promise((res, rej) => {
+          canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob returned null')), 'image/png');
+        });
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
+        setCopied();
+      } catch (e) {
+        console.warn('PNG copy failed, falling back to SVG markup', e);
+        try {
+          await navigator.clipboard.writeText(xml);
+          setCopied();
+        } catch (e2) {
+          console.error('SVG fallback also failed', e2);
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
