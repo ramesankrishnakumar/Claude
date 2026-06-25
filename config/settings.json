@@ -11,5 +11,27 @@
   "voiceEnabled": false,
   "defaultView": "chat",
   "autoMemoryEnabled": true,
-  "showThinkingSummaries": true
+  "showThinkingSummaries": true,
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmux claude-hook notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmux claude-hook stop"
+          }
+        ]
+      }
+    ]
+  }
 }
